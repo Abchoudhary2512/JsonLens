@@ -12,7 +12,7 @@ Convert JSON files into an interactive graph view.
 * Expand and collapse nodes
 * Zoom and pan across large structures
 * Quickly understand complex JSON relationships
-
+ 
 ### 🔎 Search JSON Keys
 
 Quickly find keys in large JSON files.
