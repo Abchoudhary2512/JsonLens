@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Upload, FileJson } from "lucide-react";
+import { Upload, FileJson, Trash2 } from "lucide-react";
 
 interface JsonInputProps {
   value: string;
@@ -66,21 +66,32 @@ export default function JsonInput({ value, onChange, error }: JsonInputProps) {
     onChange(JSON.stringify(example, null, 2));
   };
 
+  const clearInput = () => {
+    onChange("");
+  };
+
   return (
     <div className="h-full flex flex-col">
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-3">
         <Button
           variant="outline"
+          size="sm"
           onClick={() => fileInputRef.current?.click()}
           type="button"
+          className="flex-1"
         >
           <Upload className="w-4 h-4 mr-2" />
-          Upload JSON
+          Upload
         </Button>
-        <Button variant="outline" onClick={handleExampleLoad} type="button">
+        <Button variant="outline" size="sm" onClick={handleExampleLoad} type="button" className="flex-1">
           <FileJson className="w-4 h-4 mr-2" />
-          Load Example
+          Example
         </Button>
+        {value && (
+          <Button variant="outline" size="sm" onClick={clearInput} type="button">
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        )}
         <input
           type="file"
           ref={fileInputRef}
@@ -94,11 +105,15 @@ export default function JsonInput({ value, onChange, error }: JsonInputProps) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Paste your JSON here..."
-        className={`flex-1 font-mono text-sm min-h-[200px] ${error ? "border-red-500" : ""}`}
+        className={`flex-1 font-mono text-sm resize-none ${
+          error ? "border-red-500 focus-visible:ring-red-500" : ""
+        }`}
       />
       
       {error && (
-        <p className="text-sm text-red-500 mt-2">{error}</p>
+        <p className="text-sm text-red-500 mt-2 flex items-center">
+          <span className="font-medium">Error:</span> {error}
+        </p>
       )}
     </div>
   );

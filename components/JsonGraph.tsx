@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import dynamic from 'next/dynamic';
 import "reactflow/dist/style.css";
 import { Input } from "@/components/ui/input";
@@ -67,8 +67,10 @@ export default function JsonGraph({ data }: JsonGraphProps) {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedNode, setSelectedNode] = useState<JsonNodeData | null>(null);
-  const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
+  const reactFlowInstanceRef = useRef<any>(null);
+  const processedDataRef = useRef<any>(null);
 
+  // Memoize the conversion function
   const convertToGraph = useCallback((jsonData: any) => {
     const newNodes: GraphNode[] = [];
     const newEdges: GraphEdge[] = [];
@@ -143,22 +145,32 @@ export default function JsonGraph({ data }: JsonGraphProps) {
 
     traverse(jsonData, "root");
     return { nodes: newNodes, edges: newEdges };
-  }, []);
+  }, []); // Empty dependency array - function is stable
 
+  // Effect to update graph when data changes
   useEffect(() => {
     if (data) {
-      const { nodes: newNodes, edges: newEdges } = convertToGraph(data);
-      setNodes(newNodes);
-      setEdges(newEdges);
+      // Only update if data has actually changed
+      if (processedDataRef.current !== data) {
+        const { nodes: newNodes, edges: newEdges } = convertToGraph(data);
+        setNodes(newNodes);
+        setEdges(newEdges);
+        processedDataRef.current = data;
 
-      // Fit view after nodes are loaded
-      setTimeout(() => {
-        if (reactFlowInstance) {
-          reactFlowInstance.fitView();
-        }
-      }, 100);
+        // Fit view after nodes are loaded
+        setTimeout(() => {
+          if (reactFlowInstanceRef.current) {
+            reactFlowInstanceRef.current.fitView();
+          }
+        }, 100);
+      }
+    } else {
+      // Clear graph if no data
+      setNodes([]);
+      setEdges([]);
+      processedDataRef.current = null;
     }
-  }, [data, convertToGraph, setNodes, setEdges, reactFlowInstance]);
+  }, [data, convertToGraph, setNodes, setEdges]);
 
   const handleSearch = useCallback(() => {
     if (!searchTerm) return;
@@ -167,12 +179,12 @@ export default function JsonGraph({ data }: JsonGraphProps) {
       node.data.label.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    if (matchingNodes.length > 0 && reactFlowInstance) {
+    if (matchingNodes.length > 0 && reactFlowInstanceRef.current) {
       const firstMatch = matchingNodes[0];
       setSelectedNode(firstMatch.data);
       
       // Center on the first match
-      reactFlowInstance.setCenter(
+      reactFlowInstanceRef.current.setCenter(
         firstMatch.position.x,
         firstMatch.position.y,
         { duration: 800 }
@@ -191,7 +203,7 @@ export default function JsonGraph({ data }: JsonGraphProps) {
         }))
       );
     }
-  }, [searchTerm, nodes, setNodes, reactFlowInstance]);
+  }, [searchTerm, nodes, setNodes]);
 
   const onNodeClick = useCallback((event: any, node: any) => {
     setSelectedNode(node.data);
@@ -224,7 +236,12 @@ export default function JsonGraph({ data }: JsonGraphProps) {
         onEdgesChange={onEdgesChange}
         onNodeClick={onNodeClick}
         nodeTypes={nodeTypes}
-        onInit={setReactFlowInstance}
+        onInit={(instance) => {
+          reactFlowInstanceRef.current = instance;
+          setTimeout(() => {
+            instance.fitView();
+          }, 100);
+        }}
         fitView
         attributionPosition="bottom-right"
       >
