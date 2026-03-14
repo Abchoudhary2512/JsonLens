@@ -72,7 +72,7 @@ export default function JsonInput({ value, onChange, error }: JsonInputProps) {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex gap-2 mb-3">
+      <div className="flex gap-2 mb-3 shrink-0">
         <Button
           variant="outline"
           size="sm"
@@ -101,17 +101,25 @@ export default function JsonInput({ value, onChange, error }: JsonInputProps) {
         />
       </div>
       
-      <Textarea
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="Paste your JSON here..."
-        className={`flex-1 font-mono text-sm resize-none ${
-          error ? "border-red-500 focus-visible:ring-red-500" : ""
-        }`}
-      />
+      {/* Textarea container - takes remaining height and scrolls */}
+      <div className="flex-1 min-h-0">
+        <Textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Paste your JSON here..."
+          className={`font-mono text-sm w-full h-full resize-none ${
+            error ? "border-red-500 focus-visible:ring-red-500" : ""
+          }`}
+          style={{
+            minHeight: '100%',
+            overflow: 'auto'
+          }}
+        />
+      </div>
       
+      {/* Error message - fixed height if present */}
       {error && (
-        <p className="text-sm text-red-500 mt-2 flex items-center">
+        <p className="text-sm text-red-500 mt-2 flex items-center shrink-0">
           <span className="font-medium">Error:</span> {error}
         </p>
       )}

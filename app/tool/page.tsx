@@ -84,9 +84,9 @@ export default function ToolPage() {
       
       <Card className="flex-1 p-4 overflow-hidden">
         <div className="flex h-full gap-4">
-          {/* Left Panel */}
+          {/* Left Panel - Fixed width with proper height */}
           <div className="w-[40%] h-full flex flex-col">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-2 flex-shrink-0">
               <h2 className="text-sm font-semibold text-muted-foreground">JSON INPUT</h2>
               {jsonData && (
                 <span className="text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 px-2 py-1 rounded">
@@ -94,7 +94,8 @@ export default function ToolPage() {
                 </span>
               )}
             </div>
-            <div className="flex-1">
+            {/* This div is crucial - it takes remaining height and provides scrollable area */}
+            <div className="flex-1 min-h-0">
               <JsonInput 
                 value={jsonString} 
                 onChange={handleJsonChange} 
@@ -103,12 +104,12 @@ export default function ToolPage() {
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="w-px h-full bg-border" />
+          {/* Divider - fixed width */}
+          <div className="w-px h-full bg-border flex-shrink-0" />
 
-          {/* Right Panel */}
-          <div className="flex-1 h-full flex flex-col">
-            <div className="flex items-center justify-between mb-2">
+          {/* Right Panel - Takes remaining width */}
+          <div className="flex-1 h-full flex flex-col min-w-0">
+            <div className="flex items-center justify-between mb-2 flex-shrink-0">
               <h2 className="text-sm font-semibold text-muted-foreground">GRAPH VISUALIZATION</h2>
               {jsonData && (
                 <span className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 px-2 py-1 rounded">
@@ -116,7 +117,8 @@ export default function ToolPage() {
                 </span>
               )}
             </div>
-            <div className="flex-1 bg-muted/30 rounded-lg overflow-hidden">
+            {/* Graph container with proper height */}
+            <div className="flex-1 min-h-0 bg-muted/30 rounded-lg overflow-hidden">
               {jsonData ? (
                 <JsonGraph data={jsonData} />
               ) : (
