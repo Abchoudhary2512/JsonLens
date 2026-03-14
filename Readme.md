@@ -1,6 +1,6 @@
 # JsonLens – JSON Graph Visualizer 
 
-JsonLens is a platform that helps developers **visualize JSON data as an interactive graph**. Instead of scrolling through large JSON files, you can explore the structure visually, search nodes, and quickly copy JSON paths.
+JsonLens is a tool that helps developers **visualize JSON data as an interactive graph**. Instead of scrolling through large JSON files, you can explore the structure visually, search nodes, and quickly copy JSON paths.
 
 ## ✨ Features (v1)
 
