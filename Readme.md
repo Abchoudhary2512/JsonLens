@@ -1,6 +1,6 @@
 # JsonLens – JSON Graph Visualizer for VS Code
 
-JsonLens is a Visual Studio Code extension that helps developers **visualize JSON data as an interactive graph**. Instead of scrolling through large JSON files, you can explore the structure visually, search nodes, and quickly copy JSON paths.
+JsonLens is a platform that helps developers **visualize JSON data as an interactive graph**. Instead of scrolling through large JSON files, you can explore the structure visually, search nodes, and quickly copy JSON paths.
 
 ## ✨ Features (v1)
 
@@ -117,20 +117,6 @@ JsonLens helps developers:
 * React
 * React Flow
 * VS Code Webview API
-
----
-
-## 📦 Installation
-
-Install from the VS Code Marketplace:
-
-Search for **JsonLens – JSON Graph Visualizer**.
-
-Or install manually:
-
-```
-code --install-extension jsonlens.vsix
-```
 
 ---
 
