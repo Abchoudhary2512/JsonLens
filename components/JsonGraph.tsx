@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect, useRef, memo } from "react";
 import dynamic from 'next/dynamic';
 import "reactflow/dist/style.css";
 import { Input } from "@/components/ui/input";
@@ -45,6 +45,7 @@ import {
 
 interface JsonGraphProps {
   data: any;
+  isLive?: boolean; // Add flag for live demo mode
 }
 
 const nodeTypes: NodeTypes = {
@@ -59,118 +60,127 @@ const getJsonType = (value: any): JsonValueType => {
   if (typeof value === "number") return "number";
   if (typeof value === "boolean") return "boolean";
   if (typeof value === "undefined") return "undefined";
-  return "string"; // default fallback
+  return "string";
 };
 
-export default function JsonGraph({ data }: JsonGraphProps) {
+// Memoize the conversion function outside component
+const convertToGraph = (jsonData: any) => {
+  const newNodes: GraphNode[] = [];
+  const newEdges: GraphEdge[] = [];
+  
+  const createNode = (
+    id: string,
+    label: string,
+    value: any,
+    type: JsonValueType,
+    depth: number,
+    path: string
+  ): GraphNode => {
+    return {
+      id,
+      type: "jsonNode",
+      position: { x: depth * 300, y: newNodes.length * 80 },
+      data: {
+        label,
+        value,
+        type,
+        path,
+        isExpandable: type === "object" || type === "array",
+        isExpanded: depth < 2,
+      },
+    };
+  };
+
+  const traverse = (obj: any, currentPath: string, parentId?: string, depth = 0) => {
+    const nodeId = currentPath
+      .replace(/\./g, '-')
+      .replace(/\[/g, '-')
+      .replace(/\]/g, '')
+      .replace(/^root$/, 'root-node');
+    
+    const nodeType = getJsonType(obj);
+
+    const node = createNode(
+      nodeId,
+      currentPath.split(".").pop() || currentPath,
+      obj,
+      nodeType,
+      depth,
+      currentPath
+    );
+    
+    newNodes.push(node);
+
+    if (parentId) {
+      newEdges.push({
+        id: `${parentId}-${nodeId}`,
+        source: parentId,
+        target: nodeId,
+        animated: false,
+      });
+    }
+
+    if (typeof obj === "object" && obj !== null && depth < 2) {
+      if (Array.isArray(obj)) {
+        obj.forEach((item, index) => {
+          const childPath = `${currentPath}[${index}]`;
+          traverse(item, childPath, nodeId, depth + 1);
+        });
+      } else {
+        Object.entries(obj).forEach(([key, value]) => {
+          const childPath = `${currentPath}.${key}`;
+          traverse(value, childPath, nodeId, depth + 1);
+        });
+      }
+    }
+  };
+
+  traverse(jsonData, "root");
+  return { nodes: newNodes, edges: newEdges };
+};
+
+function JsonGraph({ data, isLive = false }: JsonGraphProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedNode, setSelectedNode] = useState<JsonNodeData | null>(null);
   const reactFlowInstanceRef = useRef<any>(null);
-  const processedDataRef = useRef<any>(null);
-
-  // Memoize the conversion function
-  const convertToGraph = useCallback((jsonData: any) => {
-    const newNodes: GraphNode[] = [];
-    const newEdges: GraphEdge[] = [];
-    
-    const createNode = (
-      id: string,
-      label: string,
-      value: any,
-      type: JsonValueType,
-      depth: number,
-      path: string
-    ): GraphNode => {
-      return {
-        id,
-        type: "jsonNode",
-        position: { x: depth * 300, y: newNodes.length * 80 },
-        data: {
-          label,
-          value,
-          type,
-          path,
-          isExpandable: type === "object" || type === "array",
-          isExpanded: depth < 2,
-        },
-      };
-    };
-
-    const traverse = (obj: any, currentPath: string, parentId?: string, depth = 0) => {
-      // Create a valid ID by removing special characters
-      const nodeId = currentPath
-        .replace(/\./g, '-')
-        .replace(/\[/g, '-')
-        .replace(/\]/g, '')
-        .replace(/^root$/, 'root-node');
-      
-      const nodeType = getJsonType(obj);
-
-      const node = createNode(
-        nodeId,
-        currentPath.split(".").pop() || currentPath,
-        obj,
-        nodeType,
-        depth,
-        currentPath
-      );
-      
-      newNodes.push(node);
-
-      if (parentId) {
-        newEdges.push({
-          id: `${parentId}-${nodeId}`,
-          source: parentId,
-          target: nodeId,
-          animated: false,
-        });
-      }
-
-      if (typeof obj === "object" && obj !== null && depth < 2) {
-        if (Array.isArray(obj)) {
-          obj.forEach((item, index) => {
-            const childPath = `${currentPath}[${index}]`;
-            traverse(item, childPath, nodeId, depth + 1);
-          });
-        } else {
-          Object.entries(obj).forEach(([key, value]) => {
-            const childPath = `${currentPath}.${key}`;
-            traverse(value, childPath, nodeId, depth + 1);
-          });
-        }
-      }
-    };
-
-    traverse(jsonData, "root");
-    return { nodes: newNodes, edges: newEdges };
-  }, []); // Empty dependency array - function is stable
+  const dataRef = useRef<any>(null);
+  const isInitializedRef = useRef(false);
 
   // Effect to update graph when data changes
   useEffect(() => {
     if (data) {
-      // Only update if data has actually changed
-      if (processedDataRef.current !== data) {
+      // Check if data has actually changed
+      if (JSON.stringify(dataRef.current) !== JSON.stringify(data)) {
         const { nodes: newNodes, edges: newEdges } = convertToGraph(data);
         setNodes(newNodes);
         setEdges(newEdges);
-        processedDataRef.current = data;
+        dataRef.current = data;
 
-        // Fit view after nodes are loaded
-        setTimeout(() => {
-          if (reactFlowInstanceRef.current) {
+        // Fit view after nodes are loaded (but not on every live update)
+        if (!isLive && reactFlowInstanceRef.current) {
+          setTimeout(() => {
             reactFlowInstanceRef.current.fitView();
-          }
-        }, 100);
+          }, 100);
+        }
       }
     } else {
-      // Clear graph if no data
       setNodes([]);
       setEdges([]);
-      processedDataRef.current = null;
+      dataRef.current = null;
     }
-  }, [data, convertToGraph, setNodes, setEdges]);
+  }, [data, setNodes, setEdges, isLive]);
+
+  // Separate effect for fitting view in live mode (only on first load)
+  useEffect(() => {
+    if (isLive && reactFlowInstanceRef.current && !isInitializedRef.current) {
+      setTimeout(() => {
+        reactFlowInstanceRef.current.fitView();
+        isInitializedRef.current = true;
+      }, 200);
+    }
+  }, [isLive]);
 
   const handleSearch = useCallback(() => {
     if (!searchTerm) return;
@@ -183,14 +193,12 @@ export default function JsonGraph({ data }: JsonGraphProps) {
       const firstMatch = matchingNodes[0];
       setSelectedNode(firstMatch.data);
       
-      // Center on the first match
       reactFlowInstanceRef.current.setCenter(
         firstMatch.position.x,
         firstMatch.position.y,
         { duration: 800 }
       );
       
-      // Highlight matching nodes
       setNodes((nds) =>
         nds.map((node) => ({
           ...node,
@@ -238,37 +246,41 @@ export default function JsonGraph({ data }: JsonGraphProps) {
         nodeTypes={nodeTypes}
         onInit={(instance) => {
           reactFlowInstanceRef.current = instance;
-          setTimeout(() => {
-            instance.fitView();
-          }, 100);
+          if (!isLive) {
+            setTimeout(() => {
+              instance.fitView();
+            }, 100);
+          }
         }}
-        fitView
+        fitView={false} // Disable auto-fit to prevent re-renders
         attributionPosition="bottom-right"
       >
         <Background />
         <Controls />
-        <MiniMap />
+        {!isLive && <MiniMap />} {/* Hide minimap in live demo to reduce complexity */}
         
-        <Panel position="top-right" className="flex gap-2">
-          <div className="flex gap-2 bg-background p-2 rounded-lg shadow-lg">
-            <Input
-              placeholder="Search keys..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-48"
-              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-            />
-            <Button size="icon" onClick={handleSearch}>
-              <Search className="h-4 w-4" />
+        {!isLive && (
+          <Panel position="top-right" className="flex gap-2">
+            <div className="flex gap-2 bg-background p-2 rounded-lg shadow-lg">
+              <Input
+                placeholder="Search keys..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-48"
+                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              />
+              <Button size="icon" onClick={handleSearch}>
+                <Search className="h-4 w-4" />
+              </Button>
+            </div>
+            <Button variant="outline" size="icon" onClick={exportGraph}>
+              <Download className="h-4 w-4" />
             </Button>
-          </div>
-          <Button variant="outline" size="icon" onClick={exportGraph}>
-            <Download className="h-4 w-4" />
-          </Button>
-        </Panel>
+          </Panel>
+        )}
       </ReactFlow>
 
-      {selectedNode && (
+      {selectedNode && !isLive && (
         <Card className="absolute bottom-4 left-4 p-4 w-80 shadow-lg z-10">
           <NodeDetails
             node={selectedNode}
@@ -278,3 +290,6 @@ export default function JsonGraph({ data }: JsonGraphProps) {
     </div>
   );
 }
+
+// Memoize the component to prevent unnecessary re-renders
+export default memo(JsonGraph);

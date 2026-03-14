@@ -112,13 +112,15 @@ export default function LandingPage() {
               <Link href="#testimonials" className="text-sm hover:text-primary transition-colors">
                 Testimonials
               </Link>
-              <Link href="https://github.com" target="_blank" rel="noopener noreferrer">
+              <Link href="https://github.com/yourusername/jsonlens" target="_blank" rel="noopener noreferrer">
                 <Github className="w-5 h-5 hover:text-primary transition-colors" />
               </Link>
               <ThemeToggle />
-              <Button size="sm" className="ml-4">
-                Get Started <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+              <Link href="/tool">
+                <Button size="sm" className="ml-4">
+                  Get Started <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -159,17 +161,20 @@ export default function LandingPage() {
                   Testimonials
                 </Link>
                 <Link 
-                  href="https://github.com" 
+                  href="https://github.com/yourusername/jsonlens" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center space-x-2 text-sm hover:text-primary transition-colors py-2"
+                  onClick={() => setIsMenuOpen(false)}
                 >
                   <Github className="w-4 h-4" />
                   <span>GitHub</span>
                 </Link>
-                <Button size="sm" className="w-full">
-                  Get Started <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
+                <Link href="/tool" className="w-full" onClick={() => setIsMenuOpen(false)}>
+                  <Button size="sm" className="w-full">
+                    Get Started <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
               </div>
             </div>
           )}
@@ -195,12 +200,16 @@ export default function LandingPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <Button size="lg" className="text-lg">
-              Try Live Demo <ChevronRight className="w-4 h-4 ml-2" />
-            </Button>
-            <Button size="lg" variant="outline" className="text-lg">
-              View on GitHub <Github className="w-4 h-4 ml-2" />
-            </Button>
+            <Link href="/tool">
+              <Button size="lg" className="text-lg">
+                Try Live Demo <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
+            <Link href="https://github.com/yourusername/jsonlens" target="_blank" rel="noopener noreferrer">
+              <Button size="lg" variant="outline" className="text-lg">
+                View on GitHub <Github className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
           </div>
 
           {/* Stats */}
@@ -305,12 +314,16 @@ export default function LandingPage() {
               Get started with JsonLens today. It's free and open source.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="secondary" className="text-lg">
-                Try It Now <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-              <Button size="lg" variant="outline" className="text-lg bg-transparent border-white text-white hover:bg-white/10">
-                View Documentation
-              </Button>
+              <Link href="/tool">
+                <Button size="lg" variant="secondary" className="text-lg">
+                  Try It Now <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+              <Link href="https://github.com/yourusername/jsonlens" target="_blank" rel="noopener noreferrer">
+                <Button size="lg" variant="outline" className="text-lg bg-transparent border-white text-white hover:bg-white/10">
+                  View Documentation
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -335,17 +348,17 @@ export default function LandingPage() {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><Link href="#features" className="hover:text-primary transition-colors">Features</Link></li>
                 <li><Link href="#demo" className="hover:text-primary transition-colors">Demo</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Documentation</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Changelog</Link></li>
+                <li><Link href="https://github.com/yourusername/jsonlens#readme" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Documentation</Link></li>
+                <li><Link href="https://github.com/yourusername/jsonlens/releases" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Changelog</Link></li>
               </ul>
             </div>
             
             <div>
               <h4 className="font-semibold mb-4">Community</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">GitHub</Link></li>
+                <li><Link href="https://github.com/yourusername/jsonlens" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">GitHub</Link></li>
                 <li><Link href="#" className="hover:text-primary transition-colors">Discord</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Twitter</Link></li>
+                <li><Link href="https://twitter.com/yourusername" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Twitter</Link></li>
                 <li><Link href="#" className="hover:text-primary transition-colors">Stack Overflow</Link></li>
               </ul>
             </div>
@@ -365,13 +378,13 @@ export default function LandingPage() {
               © 2024 JsonLens. All rights reserved.
             </p>
             <div className="flex space-x-4 mt-4 md:mt-0">
-              <Link href="https://github.com" target="_blank" rel="noopener noreferrer">
+              <Link href="https://github.com/yourusername/jsonlens" target="_blank" rel="noopener noreferrer">
                 <Github className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
               </Link>
-              <Link href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+              <Link href="https://twitter.com/yourusername" target="_blank" rel="noopener noreferrer">
                 <Twitter className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
               </Link>
-              <Link href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+              <Link href="https://linkedin.com/company/yourcompany" target="_blank" rel="noopener noreferrer">
                 <Linkedin className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
               </Link>
             </div>

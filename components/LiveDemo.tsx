@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from 'next/dynamic';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,105 +12,116 @@ const JsonGraph = dynamic(
   { ssr: false }
 );
 
-// Define a type for the JSON data
 type JsonData = Record<string, any>;
 
-const exampleData: JsonData = {
-  users: [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      address: {
-        city: "London",
-        country: "UK",
-        coordinates: {
-          lat: 51.5074,
-          lng: -0.1278
-        }
+const examples: JsonData[] = [
+  {
+    users: [
+      {
+        id: 1,
+        name: "John Doe",
+        email: "john@example.com",
+        address: {
+          city: "London",
+          country: "UK",
+          coordinates: {
+            lat: 51.5074,
+            lng: -0.1278
+          }
+        },
+        hobbies: ["reading", "gaming", "hiking"]
       },
-      hobbies: ["reading", "gaming", "hiking"]
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane@example.com",
-      address: {
-        city: "New York",
-        country: "USA",
-        coordinates: {
-          lat: 40.7128,
-          lng: -74.0060
-        }
-      },
-      hobbies: ["photography", "cooking"]
+      {
+        id: 2,
+        name: "Jane Smith",
+        email: "jane@example.com",
+        address: {
+          city: "New York",
+          country: "USA",
+          coordinates: {
+            lat: 40.7128,
+            lng: -74.0060
+          }
+        },
+        hobbies: ["photography", "cooking"]
+      }
+    ],
+    metadata: {
+      total: 2,
+      source: "live-demo"
     }
-  ],
-  metadata: {
-    total: 2,
-    source: "live-demo"
+  },
+  {
+    product: {
+      id: "p1001",
+      name: "Wireless Headphones",
+      price: 99.99,
+      inStock: true,
+      specs: {
+        brand: "SoundMax",
+        color: "Black",
+        battery: "20 hours"
+      },
+      reviews: [
+        { user: "Alice", rating: 5, comment: "Great sound!" },
+        { user: "Bob", rating: 4 }
+      ]
+    }
+  },
+  {
+    apiResponse: {
+      status: "success",
+      code: 200,
+      data: {
+        posts: [
+          { id: 1, title: "Hello World", likes: 42 },
+          { id: 2, title: "Getting Started", likes: 37 }
+        ],
+        total: 2,
+        page: 1
+      }
+    }
   }
-};
+];
 
 export default function LiveDemo() {
-  const [data, setData] = useState<JsonData>(exampleData);
+  const [data, setData] = useState<JsonData>(examples[0]);
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentExample, setCurrentExample] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout>();
 
-  const examples: JsonData[] = [
-    exampleData,
-    {
-      product: {
-        id: "p1001",
-        name: "Wireless Headphones",
-        price: 99.99,
-        inStock: true,
-        specs: {
-          brand: "SoundMax",
-          color: "Black",
-          battery: "20 hours"
-        },
-        reviews: [
-          { user: "Alice", rating: 5, comment: "Great sound!" },
-          { user: "Bob", rating: 4 }
-        ]
-      }
-    },
-    {
-      apiResponse: {
-        status: "success",
-        code: 200,
-        data: {
-          posts: [
-            { id: 1, title: "Hello World", likes: 42 },
-            { id: 2, title: "Getting Started", likes: 37 }
-          ],
-          total: 2,
-          page: 1
-        }
-      }
-    }
-  ];
+  const handleNextExample = useCallback(() => {
+    setCurrentExample((prev) => {
+      const next = (prev + 1) % examples.length;
+      setData(examples[next]);
+      return next;
+    });
+  }, []);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    
     if (isPlaying) {
-      interval = setInterval(() => {
-        setCurrentExample((prev) => (prev + 1) % examples.length);
-      }, 3000);
+      intervalRef.current = setInterval(handleNextExample, 3000);
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
     }
 
-    return () => clearInterval(interval);
-  }, [isPlaying, examples.length]);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isPlaying, handleNextExample]);
 
-  useEffect(() => {
-    setData(examples[currentExample]);
-  }, [currentExample, examples]);
+  const handlePlayPause = useCallback(() => {
+    setIsPlaying((prev) => !prev);
+  }, []);
 
-  const handleRefresh = () => {
-    setCurrentExample((prev) => (prev + 1) % examples.length);
-  };
+  const handleManualNext = useCallback(() => {
+    setIsPlaying(false);
+    handleNextExample();
+  }, [handleNextExample]);
 
   return (
     <Card className="p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -125,14 +136,14 @@ export default function LiveDemo() {
           <Button
             variant="outline"
             size="icon"
-            onClick={() => setIsPlaying(!isPlaying)}
+            onClick={handlePlayPause}
           >
             {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           </Button>
           <Button
             variant="outline"
             size="icon"
-            onClick={handleRefresh}
+            onClick={handleManualNext}
           >
             <RefreshCw className="h-4 w-4" />
           </Button>
@@ -142,7 +153,7 @@ export default function LiveDemo() {
       <div className="relative">
         {/* Graph container */}
         <div className="h-[400px] md:h-[500px] rounded-lg overflow-hidden border bg-muted/30">
-          <JsonGraph data={data} />
+          <JsonGraph data={data} isLive={true} />
         </div>
 
         {/* Floating example indicator */}
