@@ -21,7 +21,6 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import LiveDemo from "@/components/LiveDemo";
 import FeatureCard from "@/components/FeatureCard";
-import TestimonialCard from "@/components/TestimonialCard";
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -58,30 +57,6 @@ export default function LandingPage() {
     }
   ];
 
-  const testimonials = [
-    {
-      name: "Alex Chen",
-      role: "Senior Developer",
-      content: "JsonLens has revolutionized how I debug API responses. The visual representation makes complex nested structures instantly understandable.",
-      avatar: "AC",
-      rating: 5
-    },
-    {
-      name: "Sarah Johnson",
-      role: "Data Engineer",
-      content: "The JSON path copying feature alone saves me hours of work. It's become an essential tool in my daily workflow.",
-      avatar: "SJ",
-      rating: 5
-    },
-    {
-      name: "Mike Rodriguez",
-      role: "Full Stack Developer",
-      content: "Beautifully designed and incredibly useful. The live visualization updates as I type - it's like magic!",
-      avatar: "MR",
-      rating: 5
-    }
-  ];
-
   const stats = [
     { value: "10K+", label: "Downloads" },
     { value: "4.9", label: "Rating", icon: <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" /> },
@@ -109,10 +84,7 @@ export default function LandingPage() {
               <Link href="#demo" className="text-sm hover:text-primary transition-colors">
                 Demo
               </Link>
-              <Link href="#testimonials" className="text-sm hover:text-primary transition-colors">
-                Testimonials
-              </Link>
-              <Link href="https://github.com/yourusername/jsonlens" target="_blank" rel="noopener noreferrer">
+              <Link href="https://github.com/Abchoudhary2512/JsonLens" target="_blank" rel="noopener noreferrer">
                 <Github className="w-5 h-5 hover:text-primary transition-colors" />
               </Link>
               <ThemeToggle />
@@ -154,14 +126,7 @@ export default function LandingPage() {
                   Demo
                 </Link>
                 <Link 
-                  href="#testimonials" 
-                  className="text-sm hover:text-primary transition-colors py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Testimonials
-                </Link>
-                <Link 
-                  href="https://github.com/yourusername/jsonlens" 
+                  href="https://github.com/Abchoudhary2512/JsonLens" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center space-x-2 text-sm hover:text-primary transition-colors py-2"
@@ -205,7 +170,7 @@ export default function LandingPage() {
                 Try Live Demo <ChevronRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
-            <Link href="https://github.com/yourusername/jsonlens" target="_blank" rel="noopener noreferrer">
+            <Link href="https://github.com/Abchoudhary2512/JsonLens" target="_blank" rel="noopener noreferrer">
               <Button size="lg" variant="outline" className="text-lg">
                 View on GitHub <Github className="w-4 h-4 ml-2" />
               </Button>
@@ -285,23 +250,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 px-4 bg-muted/30">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Loved by Developers</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Join thousands of developers who use JsonLens daily
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((testimonial, index) => (
-              <TestimonialCard key={index} {...testimonial} />
-            ))}
-          </div>
-        </div>
-      </section>
+  
 
       {/* CTA Section */}
       <section className="py-20 px-4">
@@ -319,7 +268,7 @@ export default function LandingPage() {
                   Try It Now <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
-              <Link href="https://github.com/yourusername/jsonlens" target="_blank" rel="noopener noreferrer">
+              <Link href="https://github.com/Abchoudhary2512/JsonLens" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" variant="outline" className="text-lg bg-transparent border-white text-white hover:bg-white/10">
                   View Documentation
                 </Button>
@@ -327,70 +276,8 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section>           
 
-      {/* Footer */}
-      <footer className="border-t py-12 px-4">
-        <div className="container mx-auto">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Code2 className="w-5 h-5 text-primary" />
-                <span className="font-bold text-lg">JsonLens</span>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Transform complex JSON into beautiful, interactive graphs.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link href="#features" className="hover:text-primary transition-colors">Features</Link></li>
-                <li><Link href="#demo" className="hover:text-primary transition-colors">Demo</Link></li>
-                <li><Link href="https://github.com/yourusername/jsonlens#readme" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Documentation</Link></li>
-                <li><Link href="https://github.com/yourusername/jsonlens/releases" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Changelog</Link></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Community</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link href="https://github.com/yourusername/jsonlens" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">GitHub</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Discord</Link></li>
-                <li><Link href="https://twitter.com/yourusername" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Twitter</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Stack Overflow</Link></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link href="#" className="hover:text-primary transition-colors">Privacy</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Terms</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">License</Link></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-muted-foreground">
-              © 2024 JsonLens. All rights reserved.
-            </p>
-            <div className="flex space-x-4 mt-4 md:mt-0">
-              <Link href="https://github.com/yourusername/jsonlens" target="_blank" rel="noopener noreferrer">
-                <Github className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
-              </Link>
-              <Link href="https://twitter.com/yourusername" target="_blank" rel="noopener noreferrer">
-                <Twitter className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
-              </Link>
-              <Link href="https://linkedin.com/company/yourcompany" target="_blank" rel="noopener noreferrer">
-                <Linkedin className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
