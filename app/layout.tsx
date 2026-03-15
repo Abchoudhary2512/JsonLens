@@ -8,6 +8,9 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'JsonLens - JSON Graph Visualizer',
   description: 'JsonLens is a powerful JSON graph visualizer that transforms complex JSON data into interactive, searchable node-based diagrams for intuitive data exploration and debugging.',
+  icons: {
+    icon: './favicon.ico',
+  },
 }
 
 export default function RootLayout({

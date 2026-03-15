@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { 
   ArrowRight, 
   Github, 
-  Twitter, 
-  Linkedin, 
   Star, 
-  Code2, 
   Search, 
   Copy, 
   ZoomIn,
@@ -57,22 +55,24 @@ export default function LandingPage() {
     }
   ];
 
-  const stats = [
-    { value: "10K+", label: "Downloads" },
-    { value: "4.9", label: "Rating", icon: <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" /> },
-    { value: "100%", label: "Free & Open Source" }
-  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+    <div className="min-h-screen bg-linear-to-b from-background to-muted/20">
       {/* Navigation */}
       <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         isScrolled ? 'bg-background/80 backdrop-blur-lg border-b' : 'bg-transparent'
       }`}>
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
+
             <Link href="/" className="flex items-center space-x-2">
-              <Code2 className="w-6 h-6 text-primary" />
+              <Image 
+                src="/favicon.png" 
+                alt="JsonLens Logo" 
+                width={32} 
+                height={32}
+                className="rounded"
+              />
               <span className="font-bold text-xl">JsonLens</span>
             </Link>
 
@@ -154,10 +154,10 @@ export default function LandingPage() {
             <span className="text-sm font-medium">Introducing JsonLens v1.0</span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            See Your JSON
-            <br />Come to Life
-          </h1>
+         <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+  Turn Complex JSON
+  <br />Into Visual Insight
+</h1>
           
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
             Transform complex JSON data into beautiful, interactive graphs. 
@@ -177,18 +177,9 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Stats */}
-          <div className="flex flex-wrap justify-center gap-8 mb-20">
-            {stats.map((stat, index) => (
-              <div key={index} className="flex items-center space-x-2">
-                <span className="text-3xl font-bold">{stat.value}</span>
-                <div className="flex items-center text-muted-foreground">
-                  {stat.icon}
-                  <span className="ml-1">{stat.label}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+          <div className="flex justify-center space-x-8 *:text-sm text-muted-foreground">
+            100% Free & Open Source
+            </div>
         </div>
       </section>
 
@@ -255,7 +246,7 @@ export default function LandingPage() {
       {/* CTA Section */}
       <section className="py-20 px-4">
         <div className="container mx-auto">
-          <div className="bg-gradient-to-r from-primary to-primary/80 rounded-2xl p-12 text-center text-primary-foreground">
+          <div className="bg-linear-to-r from-primary to-primary/80 rounded-2xl p-12 text-center text-primary-foreground">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Ready to Transform Your JSON?
             </h2>
@@ -268,11 +259,7 @@ export default function LandingPage() {
                   Try It Now <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
-              <Link href="https://github.com/Abchoudhary2512/JsonLens" target="_blank" rel="noopener noreferrer">
-                <Button size="lg" variant="outline" className="text-lg bg-transparent border-white text-white hover:bg-white/10">
-                  View Documentation
-                </Button>
-              </Link>
+            
             </div>
           </div>
         </div>
