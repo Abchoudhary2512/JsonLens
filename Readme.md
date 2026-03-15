@@ -37,66 +37,11 @@ Useful for:
 * JavaScript access paths
 * Mongo queries
 
-### ⚡ Works Directly Inside VS Code
 
-JsonLens runs inside VS Code using a webview panel.
-
-Open your JSON and visualize instantly.
 
 ---
 
-## 🚀 Getting Started
 
-### 1. Open a JSON file
-
-Open any `.json` file in VS Code.
-
-### 2. Launch JsonLens
-
-Run the command:
-
-```
-JsonLens: Open JSON Graph
-```
-
-or right-click inside the editor and select:
-
-```
-Open JSON Graph Viewer
-```
-
-### 3. Explore Your JSON
-
-You can now:
-
-* Zoom and pan the graph
-* Expand nested objects
-* Search for keys
-* Copy JSON paths
-
----
-
-## 🖼 Example
-
-Input JSON:
-
-```json
-{
-  "users": [
-    {
-      "id": 1,
-      "name": "John",
-      "address": {
-        "city": "London"
-      }
-    }
-  ]
-}
-```
-
-JsonLens visualizes it as an interactive graph so you can explore relationships easily.
-
----
 
 ## 🧠 Why JsonLens?
 
@@ -114,9 +59,9 @@ JsonLens helps developers:
 ## 🛠 Built With
 
 * TypeScript
-* React
+* NextJs
 * React Flow
-* VS Code Webview API
+
 
 ---
 
