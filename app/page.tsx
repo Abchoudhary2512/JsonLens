@@ -32,10 +32,25 @@ export default function LandingPage() {
 
     window.addEventListener("scroll", handleScroll);
 
-    fetch("/api/visitors")
-      .then((res) => res.json())
-      .then((data) => setVisitors(data.count))
-      .catch(() => setVisitors(null));
+    // Check if user has already visited
+    const hasVisited = localStorage.getItem("jsonlens_visited");
+    
+    if (!hasVisited) {
+      // First visit - increment counter
+      fetch("/api/visitors")
+        .then((res) => res.json())
+        .then((data) => {
+          setVisitors(data.count);
+          localStorage.setItem("jsonlens_visited", "true");
+        })
+        .catch(() => setVisitors(null));
+    } else {
+      // Already visited - just fetch current count (no increment)
+      fetch("/api/visitors?getOnly=true")
+        .then((res) => res.json())
+        .then((data) => setVisitors(data.count))
+        .catch(() => setVisitors(null));
+    }
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
