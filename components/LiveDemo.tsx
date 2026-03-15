@@ -88,7 +88,7 @@ export default function LiveDemo() {
   const [data, setData] = useState<JsonData>(examples[0]);
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentExample, setCurrentExample] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout>();
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleNextExample = useCallback(() => {
     setCurrentExample((prev) => {
